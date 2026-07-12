@@ -2,7 +2,7 @@
 // Licensed under proprietary license. See LICENSE file.
 
 import '../../../../core/utils/image_enhancer.dart';
-import '../entities/scanned_document.dart';
+import '../../../../core/models/scanned_document.dart';
 
 class ScanProgress {
   final String step;

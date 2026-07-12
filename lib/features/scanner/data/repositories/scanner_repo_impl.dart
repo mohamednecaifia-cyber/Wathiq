@@ -3,13 +3,14 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/models/ocr_result.dart';
 import '../../../../core/services/document_storage.dart';
-import '../../../../core/utils/file_utils.dart';
+import '../../../../core/services/pdf_service.dart';
 import '../../../../core/utils/image_enhancer.dart';
-import '../../domain/entities/scanned_document.dart';
+import '../../../../core/models/scanned_document.dart';
 import '../../domain/repositories/scanner_repository.dart';
 import '../datasources/ocr_datasource.dart';
 import '../datasources/scanner_local_ds.dart';
@@ -18,11 +19,13 @@ class ScannerRepositoryImpl implements ScannerRepository {
   final ScannerLocalDataSource localDataSource;
   final OcrDataSource ocrDataSource;
   final DocumentStorage storage;
+  final PdfService pdfService;
 
   ScannerRepositoryImpl({
     required this.localDataSource,
     required this.ocrDataSource,
     required this.storage,
+    required this.pdfService,
   });
 
   @override
@@ -55,15 +58,15 @@ class ScannerRepositoryImpl implements ScannerRepository {
 
     onProgress?.call(const ScanProgress(step: 'إنشاء PDF...', current: 0));
 
-    final pdfFileName = FileUtils.generateFileName();
+    final pdfFileName = pdfService.generateFileName();
 
     final pdfFile = useOcr
-        ? await FileUtils.createSearchablePdf(
+        ? await pdfService.createSearchablePdf(
             imagePaths: finalPaths,
             ocrResults: ocrResults,
             fileName: pdfFileName,
           )
-        : await FileUtils.createPdfFromImages(
+        : await pdfService.createPdfFromImages(
             imagePaths: finalPaths,
             fileName: pdfFileName,
           );
@@ -84,7 +87,8 @@ class ScannerRepositoryImpl implements ScannerRepository {
       try {
         await File(p).copy(dest);
         persistentPaths.add(dest);
-      } catch (_) {
+      } catch (e) {
+        debugPrint('Failed to copy image $p: $e');
         persistentPaths.add(p);
       }
     }
@@ -130,7 +134,9 @@ class ScannerRepositoryImpl implements ScannerRepository {
 
   Future<void> _cleanupTempFiles(List<String> original, List<String> enhanced) async {
     for (final path in {...original, ...enhanced}) {
-      try { await File(path).delete(); } catch (_) {}
+      try { await File(path).delete(); } catch (e) {
+        debugPrint('Cleanup failed for $path: $e');
+      }
     }
   }
 
@@ -150,12 +156,16 @@ class ScannerRepositoryImpl implements ScannerRepository {
     try {
       final file = File(doc.pdfPath);
       if (await file.exists()) await file.delete();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Delete PDF failed for $docId: $e');
+    }
     try {
       final baseDir = await getApplicationDocumentsDirectory();
       final dir = Directory('${baseDir.path}/WathiqImages/$docId');
       if (await dir.exists()) await dir.delete(recursive: true);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Delete images dir failed for $docId: $e');
+    }
     await storage.saveAll(all);
   }
 

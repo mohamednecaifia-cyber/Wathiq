@@ -11,6 +11,8 @@ import '../../domain/repositories/scanner_repository.dart';
 import '../providers/scanner_providers.dart';
 import '../widgets/document_card.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/filter_selector.dart';
+import '../widgets/scan_progress_dialog.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -118,7 +120,7 @@ class HomeScreen extends ConsumerWidget {
   void _startScan(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
-      builder: (ctx) => _FilterSelector(
+      builder: (ctx) => FilterSelector(
         onSelect: (filter) {
           Navigator.pop(ctx);
           _performScan(context, ref, filter);
@@ -136,7 +138,7 @@ class HomeScreen extends ConsumerWidget {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _ScanProgressDialog(progress: progressNotifier),
+      builder: (_) => ScanProgressDialog(progress: progressNotifier),
     );
 
     final fileName =
@@ -174,153 +176,5 @@ class HomeScreen extends ConsumerWidget {
         ),
       );
     });
-  }
-}
-
-class _FilterSelector extends StatelessWidget {
-  final ValueChanged<ImageFilterType> onSelect;
-  const _FilterSelector({required this.onSelect});
-
-  @override
-  Widget build(BuildContext context) {
-    final isAr =
-        Localizations.localeOf(context).languageCode == 'ar';
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-                isAr
-                    ? 'اختر جودة المسح'
-                    : 'Choose scan quality',
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600)),
-            const SizedBox(height: 16),
-            _FilterOption(
-              icon: Icons.auto_fix_high,
-              label: isAr
-                  ? 'مستند (أبيض وأسود)'
-                  : 'Document (B&W)',
-              desc: isAr
-                  ? 'أفضل للنصوص، تباين عالي'
-                  : 'Best for text, high contrast',
-              filter: ImageFilterType.documentBw,
-              onSelect: onSelect,
-            ),
-            _FilterOption(
-              icon: Icons.image,
-              label: isAr ? 'صورة ملونة' : 'Color Photo',
-              desc: isAr
-                  ? 'بدون تحسين، الصورة الأصلية'
-                  : 'No enhancement, original image',
-              filter: ImageFilterType.original,
-              onSelect: onSelect,
-            ),
-            _FilterOption(
-              icon: Icons.blur_on,
-              label: isAr ? 'رمادي' : 'Grayscale',
-              desc: isAr
-                  ? 'درجات رمادي ناعمة'
-                  : 'Soft grayscale tones',
-              filter: ImageFilterType.grayscale,
-              onSelect: onSelect,
-            ),
-            _FilterOption(
-              icon: Icons.brightness_high,
-              label: isAr ? 'مُضاء' : 'Brighten',
-              desc: isAr
-                  ? 'للمستندات الغامقة'
-                  : 'For dark or shadowed docs',
-              filter: ImageFilterType.brighten,
-              onSelect: onSelect,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _FilterOption extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String desc;
-  final ImageFilterType filter;
-  final ValueChanged<ImageFilterType> onSelect;
-
-  const _FilterOption({
-    required this.icon,
-    required this.label,
-    required this.desc,
-    required this.filter,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title:
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: Text(desc),
-      onTap: () => onSelect(filter),
-    );
-  }
-}
-
-class _ScanProgressDialog extends StatelessWidget {
-  final ValueNotifier<ScanProgress> progress;
-  const _ScanProgressDialog({required this.progress});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<ScanProgress>(
-      valueListenable: progress,
-      builder: (context, p, _) {
-        final isAr =
-            Localizations.localeOf(context).languageCode == 'ar';
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 20),
-              Text(p.step,
-                  style: const TextStyle(fontSize: 14)),
-              if (p.total > 0) ...[
-                const SizedBox(height: 8),
-                Text(
-                  isAr
-                      ? '${p.current} / ${p.total}'
-                      : '${p.current} of ${p.total}',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600),
-                ),
-                const SizedBox(height: 12),
-                LinearProgressIndicator(
-                  value: p.current / p.total,
-                ),
-              ],
-              if (p.total == 0 && p.step.isNotEmpty) ...[
-                const SizedBox(height: 4),
-                Text(
-                  isAr
-                      ? 'قد يستغرق قليلاً على الهواتف الضعيفة'
-                      : 'May take a moment on older devices',
-                  style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.grey.shade600),
-                ),
-              ],
-            ],
-          ),
-        );
-      },
-    );
   }
 }

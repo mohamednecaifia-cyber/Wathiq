@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/file_utils.dart';
+import '../../../../core/widgets/loading_button.dart';
 import '../../../viewer/presentation/screens/viewer_screen.dart';
 
 class ImagesToPdfScreen extends StatefulWidget {
@@ -216,24 +217,13 @@ class _ImagesToPdfScreenState extends State<ImagesToPdfScreen> {
                       SafeArea(
                         child: Padding(
                           padding: const EdgeInsets.all(16),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: FilledButton.icon(
-                              onPressed: _isConverting ? null : _convertToPdf,
-                              icon: _isConverting
-                                  ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                          strokeWidth: 2, color: Colors.white),
-                                    )
-                                  : const Icon(Icons.picture_as_pdf),
-                              label: Text(_isConverting
-                                  ? (isAr ? 'جاري التحويل...' : 'Converting...')
-                                  : (isAr
-                                      ? 'تحويل إلى PDF'
-                                      : 'Convert to PDF')),
-                            ),
+                          child: LoadingButton(
+                            isLoading: _isConverting,
+                            isEnabled: _imagePaths.isNotEmpty,
+                            onPressed: _convertToPdf,
+                            icon: Icons.picture_as_pdf,
+                            idleLabel: isAr ? 'تحويل إلى PDF' : 'Convert to PDF',
+                            loadingLabel: isAr ? 'جاري التحويل...' : 'Converting...',
                           ),
                         ),
                       ),

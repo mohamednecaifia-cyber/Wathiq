@@ -4,8 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../scanner/domain/entities/scanned_document.dart';
+import '../../../../core/models/scanned_document.dart';
 import '../../../scanner/presentation/providers/scanner_providers.dart';
+import '../widgets/tool_card.dart';
 import 'images_to_pdf_screen.dart';
 import 'merge_pdf_screen.dart';
 import 'compress_pdf_screen.dart';
@@ -42,7 +43,7 @@ class ToolsScreen extends ConsumerWidget {
                 crossAxisSpacing: 12,
                 childAspectRatio: 1.1,
                 children: [
-                  _ToolCard(
+                  ToolCard(
                     icon: Icons.collections_bookmark,
                     label: isAr ? 'صور إلى PDF' : 'Images to PDF',
                     desc: isAr
@@ -53,7 +54,7 @@ class ToolsScreen extends ConsumerWidget {
                       MaterialPageRoute(builder: (_) => const ImagesToPdfScreen()),
                     ),
                   ),
-                  _ToolCard(
+                  ToolCard(
                     icon: Icons.merge,
                     label: isAr ? 'دمج PDF' : 'Merge PDF',
                     desc: isAr
@@ -64,7 +65,7 @@ class ToolsScreen extends ConsumerWidget {
                       MaterialPageRoute(builder: (_) => const MergePdfScreen()),
                     ),
                   ),
-                  _ToolCard(
+                  ToolCard(
                     icon: Icons.compress,
                     label: isAr ? 'ضغط PDF' : 'Compress PDF',
                     desc: isAr
@@ -75,7 +76,7 @@ class ToolsScreen extends ConsumerWidget {
                       MaterialPageRoute(builder: (_) => const CompressPdfScreen()),
                     ),
                   ),
-                  _ToolCard(
+                  ToolCard(
                     icon: Icons.text_snippet,
                     label: isAr ? 'استخراج النص' : 'Extract Text',
                     desc: isAr
@@ -180,58 +181,6 @@ class ToolsScreen extends ConsumerWidget {
             child: Text(isAr ? 'إغلاق' : 'Close'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ToolCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String desc;
-  final VoidCallback onTap;
-
-  const _ToolCard({
-    required this.icon,
-    required this.label,
-    required this.desc,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Card(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: cs.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: cs.primary, size: 28),
-              ),
-              const SizedBox(height: 12),
-              Text(label,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w600, fontSize: 14)),
-              const SizedBox(height: 4),
-              Text(desc,
-                  style: TextStyle(
-                      fontSize: 11, color: cs.onSurfaceVariant),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -4,15 +4,22 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../core/services/document_storage.dart';
+import '../../../../core/services/file_utils_pdf_service.dart';
+import '../../../../core/services/pdf_service.dart';
 import '../../../../core/utils/image_enhancer.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 import '../../data/datasources/ocr_datasource.dart';
 import '../../data/datasources/scanner_local_ds.dart';
 import '../../data/repositories/scanner_repo_impl.dart';
-import '../../domain/entities/scanned_document.dart';
+import '../../../../core/models/scanned_document.dart';
 import '../../domain/repositories/scanner_repository.dart';
 
 part 'scanner_providers.g.dart';
+
+@riverpod
+PdfService pdfService(PdfServiceRef ref) {
+  return FileUtilsPdfService();
+}
 
 @riverpod
 ScannerRepository scannerRepository(ScannerRepositoryRef ref) {
@@ -20,6 +27,7 @@ ScannerRepository scannerRepository(ScannerRepositoryRef ref) {
     localDataSource: ScannerLocalDataSourceImpl(),
     ocrDataSource: OcrDataSourceImpl(),
     storage: ref.watch(documentStorageProvider),
+    pdfService: ref.watch(pdfServiceProvider),
   );
 }
 

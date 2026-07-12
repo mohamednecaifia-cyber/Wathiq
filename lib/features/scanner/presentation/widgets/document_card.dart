@@ -2,11 +2,10 @@
 // Licensed under proprietary license. See LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import '../../domain/entities/scanned_document.dart';
-import '../../../../core/utils/document_actions.dart';
+import '../../../../core/models/scanned_document.dart';
+import '../../../../core/widgets/document_actions_sheet.dart';
 
 class DocumentCard extends StatelessWidget {
   final ScannedDocument document;
@@ -105,70 +104,12 @@ class DocumentCard extends StatelessWidget {
   }
 
   void _showActionSheet(BuildContext context, bool isAr) {
-    showModalBottomSheet(
+    DocumentActionsSheet.show(
       context: context,
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.share),
-                title: Text(isAr ? 'مشاركة' : 'Share'),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  DocumentActions.shareFile(document.pdfPath);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.save_alt),
-                title: Text(isAr ? 'حفظ في' : 'Save to Files'),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  DocumentActions.saveToFiles(
-                    context, document.pdfPath,
-                    '${document.name}.pdf',
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.print),
-                title: Text(isAr ? 'طباعة' : 'Print'),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  DocumentActions.printPdf(document.pdfPath);
-                },
-              ),
-              if (document.ocrText != null && document.ocrText!.isNotEmpty)
-                ListTile(
-                  leading: const Icon(Icons.text_snippet),
-                  title: Text(isAr ? 'نسخ النص' : 'Copy text'),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    _copyText(context, isAr);
-                  },
-                ),
-            ],
-          ),
-        ),
-      ),
+      pdfPath: document.pdfPath,
+      title: '${document.name}.pdf',
+      ocrText: document.ocrText,
     );
-  }
-
-  void _copyText(BuildContext context, bool isAr) {
-    final text = document.ocrText ?? '';
-    if (text.isNotEmpty) {
-      try {
-        Clipboard.setData(ClipboardData(text: text));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(isAr ? 'تم نسخ النص' : 'Text copied'),
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      } catch (_) {}
-    }
   }
 }
 

@@ -4,10 +4,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../features/scanner/domain/entities/scanned_document.dart';
+import '../models/scanned_document.dart';
 
 part 'document_storage.g.dart';
 
@@ -31,23 +32,11 @@ class DocumentStorage {
       if (decoded is! List) return [];
       return decoded
           .whereType<Map<String, dynamic>>()
-          .map((e) => ScannedDocument(
-                id: (e['id'] as String?) ?? '',
-                name: (e['name'] as String?) ?? '',
-                pdfPath: (e['pdfPath'] as String?) ?? '',
-                createdAt: e['createdAt'] != null
-                    ? DateTime.tryParse(e['createdAt'] as String) ??
-                        DateTime.now()
-                    : DateTime.now(),
-                ocrText: e['ocrText'] as String?,
-                pageCount: (e['pageCount'] as int?) ?? 1,
-                sourceImagePaths: (e['sourceImagePaths'] as List<dynamic>?)
-                    ?.whereType<String>()
-                    .toList(),
-              ))
+          .map((e) => ScannedDocument.fromJson(e))
           .where((d) => d.id.isNotEmpty)
           .toList();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('DocumentStorage.loadAll error: $e');
       return [];
     }
   }
@@ -56,20 +45,12 @@ class DocumentStorage {
     try {
       final file = await _file;
       final content = json.encode(
-        documents
-            .map((d) => {
-                  'id': d.id,
-                  'name': d.name,
-                  'pdfPath': d.pdfPath,
-                  'createdAt': d.createdAt.toIso8601String(),
-                  'ocrText': d.ocrText,
-                  'pageCount': d.pageCount,
-                  if (d.sourceImagePaths != null) 'sourceImagePaths': d.sourceImagePaths,
-                })
-            .toList(),
+        documents.map((d) => d.toJson()).toList(),
       );
       await file.writeAsString(content);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('DocumentStorage.saveAll error: $e');
+    }
   }
 }
 

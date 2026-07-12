@@ -6,9 +6,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/models/scanned_document.dart';
 import '../../../../core/utils/file_utils.dart';
 import '../../../../core/utils/image_enhancer.dart';
-import '../../../scanner/domain/entities/scanned_document.dart';
+import '../../../../core/widgets/empty_source_images.dart';
+import '../../../../core/widgets/loading_button.dart';
 import '../../../scanner/presentation/providers/scanner_providers.dart';
 import '../../../viewer/presentation/screens/viewer_screen.dart';
 
@@ -91,28 +93,7 @@ class _CompressPdfScreenState extends ConsumerState<CompressPdfScreen> {
           final eligible = list.where((d) =>
               d.sourceImagePaths != null && d.sourceImagePaths!.isNotEmpty).toList();
           if (eligible.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.compress, size: 80, color: theme.colorScheme.outlineVariant),
-                    const SizedBox(height: 16),
-                    Text(isAr ? 'لا توجد مستندات تحتوي على صور مصدر' : 'No documents with source images',
-                        style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    Text(
-                      isAr
-                          ? 'سيتم حفظ صور المصدر تلقائياً عند المسح القادم'
-                          : 'Source images will be saved automatically on next scan',
-                      style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return const EmptySourceImages(icon: Icons.compress);
           }
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -165,19 +146,13 @@ class _CompressPdfScreenState extends ConsumerState<CompressPdfScreen> {
                 ),
               ],
               const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _selected != null && !_isCompressing ? _compress : null,
-                  icon: _isCompressing
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Icon(Icons.compress),
-                  label: Text(
-                    _isCompressing
-                        ? (isAr ? 'جاري الضغط...' : 'Compressing...')
-                        : (isAr ? 'ضغط' : 'Compress'),
-                  ),
-                ),
+              LoadingButton(
+                isLoading: _isCompressing,
+                isEnabled: _selected != null,
+                onPressed: _compress,
+                icon: Icons.compress,
+                idleLabel: isAr ? 'ضغط' : 'Compress',
+                loadingLabel: isAr ? 'جاري الضغط...' : 'Compressing...',
               ),
             ],
           );
