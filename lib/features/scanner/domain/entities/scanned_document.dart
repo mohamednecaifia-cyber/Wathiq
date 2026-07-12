@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 class ScannedDocument {
   final String id;
   final String name;
@@ -37,3 +40,4 @@ class ScannedDocument {
     );
   }
 }
+

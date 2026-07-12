@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';

@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 import 'package:google_mlkit_document_scanner/google_mlkit_document_scanner.dart';
 
 abstract class ScannerLocalDataSource {
@@ -25,3 +28,4 @@ class ScannerLocalDataSourceImpl implements ScannerLocalDataSource {
     }
   }
 }
+

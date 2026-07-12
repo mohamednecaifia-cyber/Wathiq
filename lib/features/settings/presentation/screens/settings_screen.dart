@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -77,6 +80,12 @@ class SettingsScreen extends ConsumerWidget {
                   title: Text(isAr ? 'تطبيق مجاني بالكامل' : 'Completely free app'),
                   subtitle: Text(isAr ? 'لا إعلانات ولا اشتراكات' : 'No ads, no subscriptions'),
                 ),
+                const Divider(height: 1),
+                ListTile(
+                  leading: const Icon(Icons.copyright),
+                  title: Text(isAr ? 'محمد نصايفية' : 'Mohammed Nasaifia'),
+                  subtitle: Text(isAr ? 'جميع الحقوق محفوظة' : 'All rights reserved'),
+                ),
               ],
             ),
           ),
@@ -97,3 +106,4 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 }
+

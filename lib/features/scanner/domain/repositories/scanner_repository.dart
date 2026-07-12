@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 import '../../../../core/utils/image_enhancer.dart';
 import '../entities/scanned_document.dart';
 
@@ -19,3 +22,4 @@ abstract class ScannerRepository {
   Future<List<ScannedDocument>> getAllDocuments();
   Future<void> deleteDocument(String docId);
 }
+

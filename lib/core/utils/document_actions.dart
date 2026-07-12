@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -44,3 +47,4 @@ class DocumentActions {
     } catch (_) {}
   }
 }
+

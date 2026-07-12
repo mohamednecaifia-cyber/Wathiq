@@ -1,3 +1,6 @@
+// Copyright (c) 2024 Mohammed Nasaifia. All rights reserved.
+// Licensed under proprietary license. See LICENSE file.
+
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -45,8 +48,8 @@ class FileUtils {
 
     final pdf = pw.Document(
       title: fileName,
-      author: 'Wathiq Scanner',
-      creator: 'Wathiq Scanner',
+      author: 'Mohammed Nasaifia — Wathiq Scanner',
+      creator: 'Mohammed Nasaifia — Wathiq Scanner',
     );
 
     final tempDir = await getTemporaryDirectory();
@@ -109,8 +112,8 @@ class FileUtils {
   }) async {
     final pdf = pw.Document(
       title: fileName,
-      author: 'Wathiq Scanner',
-      creator: 'Wathiq Scanner',
+      author: 'Mohammed Nasaifia — Wathiq Scanner',
+      creator: 'Mohammed Nasaifia — Wathiq Scanner',
     );
     final font = await _getFont();
     final tempDir = await getTemporaryDirectory();
@@ -227,3 +230,4 @@ class FileUtils {
         .replaceAll(' ', '_');
   }
 }
+
