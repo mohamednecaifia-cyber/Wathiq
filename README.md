@@ -63,9 +63,20 @@ Wathiq is designed to adapt to the user's specific hardware ecosystem:
 * *Note:* The core scanner and image compression work perfectly, but the text-recognition layer will gracefully notify the user about missing Google Core dependencies instead of crashing.
 
 ### 🚀 Quick Install
-1. Head over to the **[Releases](https://github.com)** tab.
-2. Download the `app-release.apk`.
-3. Locate it in your device's file manager and install it.
+
+**⬇️ Download the latest APK from the [Releases page](https://github.com/mohamednecaifia-cyber/Wathiq/releases/latest).**
+
+Choose the right variant for your device:
+
+| Variant | CPU | File Size | Recommended For |
+|---------|-----|-----------|-----------------|
+| `armeabi-v7a` | 32-bit ARM | 16.9 MB | Redmi 9A, low-end Android phones |
+| `arm64-v8a` | 64-bit ARM | 18.9 MB | Modern Samsung, Xiaomi, Pixel |
+| `universal` | All architectures | ~20 MB | If unsure which variant to pick |
+
+1. Download the appropriate `.apk` file from the [Releases page](https://github.com/mohamednecaifia-cyber/Wathiq/releases/latest).
+2. Open it on your device and tap **Install**.
+3. On first scan, the OCR model will download once (requires internet). After that, everything works **100% offline**.
 
 ---
 
