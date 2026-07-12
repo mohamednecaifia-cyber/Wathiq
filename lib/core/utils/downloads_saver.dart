@@ -7,26 +7,19 @@ class DownloadsSaver {
   static const _channel = MethodChannel('com.nasaifia.wathiq/downloads');
 
   static Future<String> save(String fileName, List<int> bytes) async {
+    final docs = await getApplicationDocumentsDirectory();
+    final localDir = Directory('${docs.path}/Wathiq');
+    if (!await localDir.exists()) await localDir.create(recursive: true);
+    final localFile = File('${localDir.path}/$fileName');
+    await localFile.writeAsBytes(bytes);
+
     try {
-      return await _channel.invokeMethod<String>('saveFile', {
+      await _channel.invokeMethod<String>('saveFile', {
         'fileName': fileName,
         'bytes': bytes,
-      }) ?? '';
-    } catch (_) {
-      final dir = await _downloadDir();
-      if (!await dir.exists()) await dir.create(recursive: true);
-      final file = File('${dir.path}/$fileName');
-      await file.writeAsBytes(bytes);
-      return file.path;
-    }
-  }
-
-  static Future<Directory> _downloadDir() async {
-    try {
-      final dir = Directory('/storage/emulated/0/Download/Wathiq');
-      if (await dir.exists()) return dir;
+      });
     } catch (_) {}
-    final docs = await getApplicationDocumentsDirectory();
-    return Directory('${docs.path}/Wathiq');
+
+    return localFile.path;
   }
 }

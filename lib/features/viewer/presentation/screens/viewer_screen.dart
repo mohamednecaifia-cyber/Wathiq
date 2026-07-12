@@ -25,6 +25,7 @@ class ViewerScreen extends StatefulWidget {
 
 class _ViewerScreenState extends State<ViewerScreen> {
   Uint8List? _cachedBytes;
+  String? _error;
 
   @override
   void initState() {
@@ -34,9 +35,16 @@ class _ViewerScreenState extends State<ViewerScreen> {
 
   Future<void> _loadBytes() async {
     try {
-      final bytes = await File(widget.pdfPath).readAsBytes();
+      final file = File(widget.pdfPath);
+      if (!await file.exists()) {
+        if (mounted) setState(() => _error = 'File not found: ${widget.pdfPath}');
+        return;
+      }
+      final bytes = await file.readAsBytes();
       if (mounted) setState(() => _cachedBytes = bytes);
-    } catch (_) {}
+    } catch (e) {
+      if (mounted) setState(() => _error = 'Failed to load PDF: $e');
+    }
   }
 
   @override
@@ -51,16 +59,36 @@ class _ViewerScreenState extends State<ViewerScreen> {
           ),
         ],
       ),
-      body: _cachedBytes != null
-          ? PdfPreview(
-              pdfFileName: widget.title,
-              build: (format) => _cachedBytes!,
-              canChangeOrientation: true,
-              canDebug: false,
-              actions: const [],
-            )
-          : const Center(child: CircularProgressIndicator()),
+      body: _buildBody(),
     );
+  }
+
+  Widget _buildBody() {
+    if (_error != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(_error!, textAlign: TextAlign.center),
+            ],
+          ),
+        ),
+      );
+    }
+    if (_cachedBytes != null) {
+      return PdfPreview(
+        pdfFileName: widget.title,
+        build: (format) => _cachedBytes!,
+        canChangeOrientation: true,
+        canDebug: false,
+        actions: const [],
+      );
+    }
+    return const Center(child: CircularProgressIndicator());
   }
 
   void _showActionSheet(BuildContext context) {
