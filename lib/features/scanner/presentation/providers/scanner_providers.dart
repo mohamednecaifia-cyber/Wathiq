@@ -50,4 +50,10 @@ class ScannerNotifier extends _$ScannerNotifier {
     await repo.deleteDocument(docId);
     state = AsyncValue.data(await repo.getAllDocuments());
   }
+
+  Future<void> restoreDocument(ScannedDocument doc, int index) async {
+    final repo = ref.read(scannerRepositoryProvider);
+    await repo.restoreDocument(doc, index);
+    state = AsyncValue.data(await repo.getAllDocuments());
+  }
 }

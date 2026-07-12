@@ -10,6 +10,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../models/ocr_result.dart';
 import 'arabic_text_processor.dart';
+import 'downloads_saver.dart';
 import 'image_enhancer.dart';
 
 class FileUtils {
@@ -205,17 +206,10 @@ class FileUtils {
     final safeName = _sanitize(fileName);
     final bytes = await pdf.save();
 
-    // Try public Downloads/Wathiq first
     try {
-      final downloadDir = Directory('/storage/emulated/0/Download/Wathiq');
-      if (!await downloadDir.exists()) {
-        await downloadDir.create(recursive: true);
-      }
-      final file = File('${downloadDir.path}/$safeName');
-      await file.writeAsBytes(bytes);
-      return file;
+      final path = await DownloadsSaver.save(safeName, bytes);
+      return File(path);
     } catch (_) {
-      // Fall back to app-private directory
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/$safeName');
       await file.writeAsBytes(bytes);

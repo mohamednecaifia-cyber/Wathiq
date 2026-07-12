@@ -21,5 +21,6 @@ abstract class ScannerRepository {
   });
   Future<List<ScannedDocument>> getAllDocuments();
   Future<void> deleteDocument(String docId);
+  Future<void> restoreDocument(ScannedDocument doc, int index);
 }
 

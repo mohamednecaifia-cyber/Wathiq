@@ -55,10 +55,23 @@ class HomeScreen extends ConsumerWidget {
                         child:
                             const Icon(Icons.delete, color: Colors.white),
                       ),
-                      onDismissed: (_) {
-                        ref
-                            .read(scannerNotifierProvider.notifier)
-                            .deleteDocument(doc.id);
+                      confirmDismiss: (direction) async {
+                        final notifier = ref.read(scannerNotifierProvider.notifier);
+                        final docs = ref.read(scannerNotifierProvider).valueOrNull ?? [];
+                        final idx = docs.indexWhere((d) => d.id == doc.id);
+                        await notifier.deleteDocument(doc.id);
+                        if (!context.mounted) return true;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(isAr ? 'تم حذف المستند' : 'Document deleted'),
+                            duration: const Duration(seconds: 4),
+                            action: SnackBarAction(
+                              label: isAr ? 'تراجع' : 'Undo',
+                              onPressed: () => notifier.restoreDocument(doc, idx),
+                            ),
+                          ),
+                        );
+                        return true;
                       },
                       child: DocumentCard(
                         document: doc,

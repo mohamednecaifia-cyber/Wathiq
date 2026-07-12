@@ -158,4 +158,12 @@ class ScannerRepositoryImpl implements ScannerRepository {
     } catch (_) {}
     await storage.saveAll(all);
   }
+
+  @override
+  Future<void> restoreDocument(ScannedDocument doc, int index) async {
+    final all = await storage.loadAll();
+    final insertAt = index.clamp(0, all.length);
+    all.insert(insertAt, doc);
+    await storage.saveAll(all);
+  }
 }
