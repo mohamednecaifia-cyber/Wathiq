@@ -1,0 +1,44 @@
+name: pdf_scanner
+description: A high-performance on-device PDF scanner.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  google_mlkit_document_scanner: ^0.5.0
+  google_mlkit_text_recognition: ^0.16.0
+  image: ^4.5.3
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  path_provider: ^2.1.4
+  share_plus: ^10.1.4
+  file_picker: ^11.0.2
+  intl: ^0.20.2
+  arabic_reshaper: ^0.0.1
+  bidi: ^2.0.13
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.13
+  riverpod_generator: ^2.4.3
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-VariableFont_wght.ttf
+        - asset: assets/fonts/Cairo-Regular.ttf
+  assets:
+    - assets/fonts/
