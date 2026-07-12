@@ -1,3 +1,8 @@
+<p align="center">
+  <a href="README.md"><img src="https://img.shields.io/badge/EN-English-blue?style=for-the-badge" alt="English" /></a>
+  <a href="README.ar.md"><img src="https://img.shields.io/badge/AR-العربية-green?style=for-the-badge" alt="العربية" /></a>
+</p>
+
 # 📄 Wathiq (وثيق) — Smart Document Scanner & Searchable PDF Generator
 
 <p align="center">
@@ -8,7 +13,7 @@
   <img src="https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge" alt="License" />
 </p>
 
-**Wathiq (وثيق)** is a high-performance, ultra-lightweight offline Document Scanner and Searchable PDF Generator built specifically to run smoothly on resource-constrained devices (like the Redmi 9A with 2GB RAM).
+**Wathiq (وثيق)** is a high-performance, ultra-lightweight offline Document Scanner and Searchable PDF Generator built specifically to run smoothly on resource-constrained devices with 2GB RAM or less.
 
 Most modern scanners are bloated (45MB+), consume massive RAM, and require an internet connection to perform OCR. **Wathiq** shatters these limitations by rewriting the standard scanning pipeline.
 
