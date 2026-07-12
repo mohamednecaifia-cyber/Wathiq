@@ -3,7 +3,8 @@
 /.packages
 /.pub/
 /build/
-
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # IDE
 .idea/
@@ -14,5 +15,13 @@
 .DS_Store
 Thumbs.db
 
+# iOS generated
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/ephemeral/
+/ios/Runner/GeneratedPluginRegistrant.h
+/ios/Runner/GeneratedPluginRegistrant.m
+
 # Project specific
 /debug-info/
+.metadata
