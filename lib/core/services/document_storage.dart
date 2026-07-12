@@ -30,15 +30,41 @@ class DocumentStorage {
       final content = await file.readAsString();
       final decoded = json.decode(content);
       if (decoded is! List) return [];
-      return decoded
+      final docs = decoded
           .whereType<Map<String, dynamic>>()
           .map((e) => ScannedDocument.fromJson(e))
           .where((d) => d.id.isNotEmpty)
           .toList();
+      await _migrateContentUris(docs);
+      return docs;
     } catch (e) {
       debugPrint('DocumentStorage.loadAll error: $e');
       return [];
     }
+  }
+
+  Future<void> _migrateContentUris(List<ScannedDocument> docs) async {
+    final baseDir = await getApplicationDocumentsDirectory();
+    var changed = false;
+    for (final doc in docs) {
+      if (doc.pdfPath.startsWith('content://')) {
+        final migrated = '${baseDir.path}/Wathiq/${doc.name}.pdf';
+        try {
+          final src = File(doc.pdfPath);
+          if (await src.exists()) {
+            final dest = File(migrated);
+            await dest.create(recursive: true);
+            await src.copy(dest.path);
+          }
+        } catch (_) {}
+        final json = doc.toJson();
+        json['pdfPath'] = migrated;
+        final idx = docs.indexOf(doc);
+        docs[idx] = ScannedDocument.fromJson(json);
+        changed = true;
+      }
+    }
+    if (changed) await saveAll(docs);
   }
 
   Future<void> saveAll(List<ScannedDocument> documents) async {

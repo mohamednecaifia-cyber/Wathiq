@@ -94,10 +94,11 @@ class OcrDataSourceImpl implements OcrDataSource {
     try {
       return await recognizer.processImage(image);
     } catch (e) {
-      if (e.toString().contains('model') ||
-          e.toString().contains('download') ||
-          e.toString().contains('Module') ||
-          e.toString().contains('not yet available')) {
+      final msg = e.toString().toLowerCase();
+      if (msg.contains('model') ||
+          msg.contains('download') ||
+          msg.contains('module') ||
+          msg.contains('not yet available')) {
         throw Exception(
             'جاري تهيئة محرك التعرف على النص لأول مرة فقط، يرجى المحاولة بعد قليل');
       }

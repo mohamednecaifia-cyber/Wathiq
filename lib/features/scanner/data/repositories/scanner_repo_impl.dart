@@ -109,7 +109,8 @@ class ScannerRepositoryImpl implements ScannerRepository {
     all.insert(0, doc);
     await storage.saveAll(all);
 
-    await _cleanupTempFiles(imagePaths, finalPaths);
+    final tempSet = {...imagePaths, ...finalPaths}.difference(persistentPaths.toSet());
+    await _cleanupTempFiles(tempSet);
 
     return doc;
   }
@@ -132,8 +133,8 @@ class ScannerRepositoryImpl implements ScannerRepository {
     return enhanced;
   }
 
-  Future<void> _cleanupTempFiles(List<String> original, List<String> enhanced) async {
-    for (final path in {...original, ...enhanced}) {
+  Future<void> _cleanupTempFiles(Set<String> paths) async {
+    for (final path in paths) {
       try { await File(path).delete(); } catch (e) {
         debugPrint('Cleanup failed for $path: $e');
       }

@@ -27,16 +27,25 @@ class _CompressPdfScreenState extends ConsumerState<CompressPdfScreen> {
   bool _isCompressing = false;
 
   static const _qualityPresets = {
-    'عالية': 0.75,
-    'متوسطة': 0.5,
-    'مضغوطة': 0.25,
+    'عالية/High': 0.75,
+    'متوسطة/Medium': 0.5,
+    'مضغوطة/Low': 0.25,
   };
 
   Future<void> _compress() async {
-    if (_selected == null) return;
+    final doc = _selected;
+    if (doc == null) return;
+    final images = doc.sourceImagePaths;
+    if (images == null || images.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('لا توجد صور مصدر للضغط')),
+        );
+      }
+      return;
+    }
     setState(() => _isCompressing = true);
     try {
-      final images = _selected!.sourceImagePaths!;
       final maxDim = (_quality * 2000).round().clamp(400, 2000);
       final jpegQuality = (_quality * 85).round().clamp(20, 85);
 
@@ -73,6 +82,7 @@ class _CompressPdfScreenState extends ConsumerState<CompressPdfScreen> {
     } finally {
       if (mounted) setState(() => _isCompressing = false);
     }
+    return;
   }
 
   @override
@@ -136,7 +146,7 @@ class _CompressPdfScreenState extends ConsumerState<CompressPdfScreen> {
                   children: _qualityPresets.entries.map((e) {
                     final active = (_quality * 100).round() == (e.value * 100).round();
                     return ChoiceChip(
-                      label: Text(isAr ? e.key : e.key),
+                      label: Text(e.key.split('/').last),
                       selected: active,
                       onSelected: (v) {
                         if (v) setState(() => _quality = e.value);
